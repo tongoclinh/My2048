@@ -30,6 +30,8 @@
     
     int bestScore;
     CGFloat bestTime;
+    BOOL moveableRow[4];
+    BOOL moveableCol[4];
 }
 
 @end
@@ -84,6 +86,8 @@
 - (void)spawnInitializeTile
 {
     //default state: 2 tiles '2' and 1 tile '1'
+    memset(moveableCol, YES, sizeof(moveableCol));
+    memset(moveableRow, YES, sizeof(moveableRow));
     [self addTileNumber:2 position:[self getRandomBlankTile]];
     [self addTileNumber:2 position:[self getRandomBlankTile]];
     [self addTileNumber:4 position:[self getRandomBlankTile]];
@@ -98,7 +102,7 @@
     do {
         r = arc4random_uniform(4);
         c = arc4random_uniform(4);
-    } while (numberBoard[r][c] != -1);
+    } while (numberBoard[r][c] != -1 || !moveableCol[c] || !moveableRow[r]);
     return ccp(r, c);
 }
 
@@ -205,6 +209,12 @@
 
 - (void)moveTileFrom:(CGPoint)source To:(CGPoint)destination AndMerge:(BOOL)isMerge
 {
+    //update moveable state
+    if (source.x == destination.x)
+        moveableRow[(int)source.x] = YES;
+    if (source.y == destination.y)
+        moveableCol[(int)source.y] = YES;
+    
     //increase queue size of moving action
     inQueue++;
     
@@ -304,6 +314,8 @@
     isMoving = YES;
     inQueue = 0;
     addedScore = 0;
+    memset(moveableCol, YES, sizeof(moveableCol));
+    memset(moveableRow, NO, sizeof(moveableRow));
     
     //iterate each row
     for (int r = 0; r < 4; r++) {
@@ -345,6 +357,9 @@
     inQueue = 0;
     addedScore = 0;
     
+    memset(moveableCol, YES, sizeof(moveableCol));
+    memset(moveableRow, NO, sizeof(moveableRow));
+    
     for (int r = 0; r < 4; r++) {
         int lock = 3;
         for (int c = 3; c >= 0; c--)
@@ -379,6 +394,9 @@
     inQueue = 0;
     addedScore = 0;
     
+    memset(moveableCol, NO, sizeof(moveableCol));
+    memset(moveableRow, YES, sizeof(moveableRow));
+    
     for (int c = 0; c < 4; c++) {
         int lock = 3;
         for (int r = 3; r >= 0; r--)
@@ -411,6 +429,10 @@
         return;
     isMoving = YES;
     inQueue = 0;
+    
+    
+    memset(moveableCol, NO, sizeof(moveableCol));
+    memset(moveableRow, YES, sizeof(moveableRow));
     
     addedScore = 0;
     for (int c = 0; c < 4; c++) {
