@@ -12,6 +12,7 @@
 
 - (void)setNumber:(int)number;
 - (void)fadeOut:(CGFloat)duration;
+- (void)fadeInWithDuration:(CGFloat)duration;
 - (void)bouncing;
 
 @end

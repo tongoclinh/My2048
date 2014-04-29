@@ -32,6 +32,8 @@
     CGFloat bestTime;
     BOOL moveableRow[4];
     BOOL moveableCol[4];
+    
+    int lastMove;
 }
 
 @end
@@ -78,6 +80,7 @@
     [_retryButton setVisible:NO];
     score = 0;
     nextTile = 2;
+    lastMove = -1;
     
     bestScore = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"My2048BestScore"];
     bestTime = [[NSUserDefaults standardUserDefaults] floatForKey:@"My2048BestTime"];
@@ -109,6 +112,7 @@
 //add new tile to board
 - (void)addTileNumber:(int)number position:(CGPoint)position
 {
+    isMoving = YES;
     //update board state
     Tile *tile = (Tile *)[CCBReader load:@"Tile"];
     [tile setNumber:number];
@@ -121,10 +125,54 @@
     
     [_board addChild:tile];
     
+    CCActionFiniteTime *appear;
+    CGPoint temp;
     //effect
-    tile.scale = 0.1;
-    CCAction *appear = [CCActionScaleTo actionWithDuration:0.2 scale:1];
-    [tile runAction:appear];
+    switch (lastMove) {
+        case -1:
+            tile.scale = 0.1;
+            appear = [CCActionScaleTo actionWithDuration:0.2 scale:1];
+            break;
+            
+        //move left
+        case 0:
+            temp = tile.position;
+            tile.position = ccpAdd(tile.position, ccp(0.25, 0));
+            appear = [CCActionMoveTo actionWithDuration:0.2 position:temp];
+            break;
+            
+        //move right
+        case 1:
+            temp = tile.position;
+            tile.position = ccpAdd(tile.position, ccp(-0.25, 0));
+            appear = [CCActionMoveTo actionWithDuration:0.2 position:temp];
+            break;
+            
+        //move up
+        case 2:
+            temp = tile.position;
+            tile.position = ccpAdd(tile.position, ccp(0, -0.25));
+            appear = [CCActionMoveTo actionWithDuration:0.2 position:temp];
+            break;
+            
+        //move down
+        case 3:
+            temp = tile.position;
+            tile.position = ccpAdd(tile.position, ccp(0, 0.25));
+            appear = [CCActionMoveTo actionWithDuration:0.2 position:temp];
+            break;
+        
+        //initial spawn
+        default:
+            break;
+    }
+    
+    CCActionCallBlock *unblock = [CCActionCallBlock actionWithBlock:^{
+        isMoving = NO;
+    }];
+
+    [tile runAction:[CCActionSequence actions:appear, unblock, nil]];
+    [tile fadeInWithDuration:0.2];
     
 }
 
@@ -317,6 +365,7 @@
     memset(moveableCol, NO, sizeof(moveableCol));
     moveableCol[3] = YES;
     memset(moveableRow, NO, sizeof(moveableRow));
+    lastMove = 0;
     
     //iterate each row
     for (int r = 0; r < 4; r++) {
@@ -361,6 +410,7 @@
     memset(moveableCol, NO, sizeof(moveableCol));
     moveableCol[0] = YES;
     memset(moveableRow, NO, sizeof(moveableRow));
+    lastMove = 1;
     
     for (int r = 0; r < 4; r++) {
         int lock = 3;
@@ -400,6 +450,8 @@
     memset(moveableRow, NO, sizeof(moveableRow));
     moveableRow[0] = YES;
     
+    lastMove = 2;
+    
     for (int c = 0; c < 4; c++) {
         int lock = 3;
         for (int r = 3; r >= 0; r--)
@@ -437,6 +489,8 @@
     memset(moveableCol, NO, sizeof(moveableCol));
     memset(moveableRow, NO, sizeof(moveableRow));
     moveableRow[3] = YES;
+    
+    lastMove = 3;
     
     addedScore = 0;
     for (int c = 0; c < 4; c++) {

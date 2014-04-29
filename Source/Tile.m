@@ -96,6 +96,12 @@
     [_number runAction:fade];
 }
 
+- (void)fadeInWithDuration:(CGFloat)duration
+{
+    CCActionFadeIn *fade = [CCActionFadeIn actionWithDuration:duration];
+    [_number runAction:fade];
+}
+
 - (void)bouncing
 {
     //effect
