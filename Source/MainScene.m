@@ -314,7 +314,8 @@
     isMoving = YES;
     inQueue = 0;
     addedScore = 0;
-    memset(moveableCol, YES, sizeof(moveableCol));
+    memset(moveableCol, NO, sizeof(moveableCol));
+    moveableCol[3] = YES;
     memset(moveableRow, NO, sizeof(moveableRow));
     
     //iterate each row
@@ -357,7 +358,8 @@
     inQueue = 0;
     addedScore = 0;
     
-    memset(moveableCol, YES, sizeof(moveableCol));
+    memset(moveableCol, NO, sizeof(moveableCol));
+    moveableCol[0] = YES;
     memset(moveableRow, NO, sizeof(moveableRow));
     
     for (int r = 0; r < 4; r++) {
@@ -395,7 +397,8 @@
     addedScore = 0;
     
     memset(moveableCol, NO, sizeof(moveableCol));
-    memset(moveableRow, YES, sizeof(moveableRow));
+    memset(moveableRow, NO, sizeof(moveableRow));
+    moveableRow[0] = YES;
     
     for (int c = 0; c < 4; c++) {
         int lock = 3;
@@ -432,7 +435,8 @@
     
     
     memset(moveableCol, NO, sizeof(moveableCol));
-    memset(moveableRow, YES, sizeof(moveableRow));
+    memset(moveableRow, NO, sizeof(moveableRow));
+    moveableRow[3] = YES;
     
     addedScore = 0;
     for (int c = 0; c < 4; c++) {
