@@ -183,12 +183,12 @@
     //generate next tile number
     int seed = arc4random_uniform(1 << 20);
     
-    if (score < 5000) {
-        if (seed < (1 << 20) - (1 << 16))
+    if (score < 1000) {
+        if (seed < (1 << 20) - (1 << 17))
             nextTile = 2;
         else
             nextTile = 4;
-    } else if (score < 10000) {
+    } else if (score < 5000) {
         if (seed < (1 << 20) - (1 << 16))
             nextTile = 2;
         else if (seed < (1 << 20) - (1 << 12)) {
@@ -197,20 +197,18 @@
             nextTile = 8;
         }
     } else {
-        if (seed < (1 << 19) + (1 << 18)) {
+        if (seed < (1 << 19) + (1 << 18) + (1 << 17)) {
             nextTile = 2;
-        } else if (seed < (1 << 19) + (1 << 18) + (1 << 17)) {
-            nextTile = 4;
         } else if (seed < (1 << 19) + (1 << 18) + (1 << 17) + (1 << 16)) {
-            nextTile = 8;
+            nextTile = 4;
         } else if (seed < (1 << 19) + (1 << 18) + (1 << 17) + (1 << 16) + (1 << 15)) {
-            nextTile = 16;
+            nextTile = 8;
         } else if (seed < (1 << 19) + (1 << 18) + (1 << 17) + (1 << 16) + (1 << 15) + (1 << 14)) {
-            nextTile = 32;
+            nextTile = 16;
         } else if (seed < (1 << 19) + (1 << 18) + (1 << 17) + (1 << 16) + (1 << 15) + (1 << 14) + (1 << 13)) {
-            nextTile = 64;
+            nextTile = 32;
         } else {
-            nextTile = 128;
+            nextTile = 64;
         }
     }
     
